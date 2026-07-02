@@ -154,4 +154,20 @@ export const assignJobToWorker = async (workerId, jobId) => {
   return response.data;
 };
 
+// Dead Letter Queue endpoints
+export const getDeadLetterEntries = async () => {
+  const response = await api.get('/dead-letter/');
+  return response.data;
+};
+
+export const getDeadLetterEntry = async (jobId) => {
+  const response = await api.get(`/dead-letter/${jobId}`);
+  return response.data;
+};
+
+export const deleteDeadLetterEntry = async (id) => {
+  const response = await api.delete(`/dead-letter/${id}`);
+  return response.data;
+};
+
 export default api;

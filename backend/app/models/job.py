@@ -22,6 +22,8 @@ class Job(Base):
 
     max_retries = Column(Integer, default=3)
 
+    retry_delay_seconds = Column(Integer, default=60)
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
     started_at = Column(DateTime, nullable=True)

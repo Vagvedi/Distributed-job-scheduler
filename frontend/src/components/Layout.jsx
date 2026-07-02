@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { FiGrid, FiUsers, FiFolder, FiList, FiPlayCircle, FiCpu, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiGrid, FiUsers, FiFolder, FiList, FiPlayCircle, FiCpu, FiLogOut, FiMenu, FiX, FiAlertOctagon } from 'react-icons/fi';
 import { logoutUser, getLoggedInUserEmail } from '../api/api';
 
 const Layout = ({ children }) => {
@@ -23,6 +23,7 @@ const Layout = ({ children }) => {
     { name: 'Queues', path: '/queues', icon: <FiList /> },
     { name: 'Jobs', path: '/jobs', icon: <FiPlayCircle /> },
     { name: 'Workers', path: '/workers', icon: <FiCpu /> },
+    { name: 'Dead Letter Queue', path: '/dead-letter', icon: <FiAlertOctagon /> },
   ];
 
   const toggleSidebar = () => {

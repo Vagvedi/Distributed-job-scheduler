@@ -12,6 +12,7 @@ import Projects from './pages/Projects';
 import Queues from './pages/Queues';
 import Jobs from './pages/Jobs';
 import Workers from './pages/Workers';
+import DeadLetterQueue from './pages/DeadLetterQueue';
 
 function App() {
   return (
@@ -78,6 +79,16 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Workers />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dead-letter"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DeadLetterQueue />
               </Layout>
             </ProtectedRoute>
           }

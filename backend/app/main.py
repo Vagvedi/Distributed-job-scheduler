@@ -24,6 +24,7 @@ from app.routers.queues import router as queue_router
 from app.routers.auth import router as auth_router
 from app.routers.jobs import router as jobs_router
 from app.routers.workers import router as workers_router
+from app.routers.dead_letter import router as dead_letter_router
 
 # Create all tables after importing model modules
 Base.metadata.create_all(bind=engine)
@@ -49,6 +50,7 @@ app.include_router(project_router)
 app.include_router(queue_router)
 app.include_router(jobs_router)
 app.include_router(workers_router)
+app.include_router(dead_letter_router)
 
 @app.get("/")
 def root():

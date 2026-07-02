@@ -74,7 +74,7 @@ def update_job_status_endpoint(
 ):
     """Update the status of a job"""
     try:
-        return update_job_status(db, job_id, status_update.status)
+        return update_job_status(db, job_id, status_update.status, status_update.failure_reason)
     except HTTPException:
         raise
     except Exception as e:
