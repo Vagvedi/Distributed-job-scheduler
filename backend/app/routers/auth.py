@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.schemas.user import UserCreate, UserLogin
+from app.schemas.user import UserResponse
 from app.schemas.token import Token
 from app.services.auth_service import (
     create_user,
@@ -19,27 +20,22 @@ router = APIRouter(
 )
 
 
-@router.post("/register")
+@router.post("/register", response_model=UserResponse)
 def register(
     user: UserCreate,
     db: Session = Depends(get_db)
 ):
+    try:
+        existing = get_user_by_email(db, user.email)
 
-    existing = get_user_by_email(
-        db,
-        user.email
-    )
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
 
-    if existing:
-        raise HTTPException(
-            status_code=400,
-            detail="Email already registered"
-        )
-
-    return create_user(
-        db,
-        user
-    )
+        return create_user(db, user)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post(
@@ -50,34 +46,19 @@ def login(
     user: UserLogin,
     db: Session = Depends(get_db)
 ):
+    try:
+        db_user = get_user_by_email(db, user.email)
 
-    db_user = get_user_by_email(
-        db,
-        user.email
-    )
+        if not db_user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not db_user:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid credentials"
-        )
+        if not verify_password(user.password, db_user.password):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not verify_password(
-        user.password,
-        db_user.password
-    ):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid credentials"
-        )
+        token = create_access_token({"sub": db_user.email})
 
-    token = create_access_token(
-        {
-            "sub": db_user.email
-        }
-    )
-
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+        return {"access_token": token, "token_type": "bearer"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
