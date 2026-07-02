@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.database import Base, engine
 
@@ -19,6 +20,7 @@ from app.models import (
 
 from app.routers.organizations import router as org_router
 from app.routers.projects import router as project_router
+from app.routers.queues import router as queue_router
 from app.routers.auth import router as auth_router
 
 # Create all tables after importing model modules
@@ -29,11 +31,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # 🔥 THIS IS IMPORTANT
 app.include_router(auth_router)
 
 app.include_router(org_router)
 app.include_router(project_router)
+app.include_router(queue_router)
 
 @app.get("/")
 def root():

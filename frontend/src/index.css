@@ -1,0 +1,362 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  --bg-primary: #f4f7fc;
+  --bg-sidebar: rgba(255, 255, 255, 0.8);
+  --bg-navbar: rgba(255, 255, 255, 0.8);
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #475569;
+  --color-light-blue: #eff6ff;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --border-light: rgba(226, 232, 240, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(37, 99, 235, 0.04), 0 4px 6px -4px rgba(37, 99, 235, 0.04);
+  --sidebar-width: 260px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Class */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Main Dashboard Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  border-right: 1px solid var(--border-light);
+}
+
+.sidebar-brand {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 20px 12px;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.sidebar-item {
+  margin-bottom: 6px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--color-secondary);
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link svg {
+  margin-right: 12px;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background-color: var(--color-light-blue);
+  color: var(--color-primary);
+}
+
+.sidebar-link:hover svg {
+  transform: scale(1.1);
+}
+
+.sidebar-link.active {
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.sidebar-link.active svg {
+  color: white;
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex-grow: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Navbar */
+.top-navbar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.content-body {
+  padding: 30px;
+  flex-grow: 1;
+}
+
+/* Rounded Cards with Soft Shadows & Animations */
+.dashboard-card {
+  border: none;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px -8px rgba(37, 99, 235, 0.15);
+}
+
+.card-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background-color: var(--color-light-blue);
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover .card-icon-wrapper {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Buttons Styling */
+.btn-primary-custom {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+  color: white;
+}
+
+/* Authentication Page Styling */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 10% 20%, rgba(216, 241, 255, 0.46) 0.1%, rgba(255, 255, 255, 1) 90.1%);
+  padding: 20px;
+}
+
+.auth-card {
+  max-width: 450px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.auth-logo {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Custom Table Styles */
+.custom-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  width: 100%;
+}
+
+.custom-table tr {
+  box-shadow: var(--shadow-sm);
+  background-color: white;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.custom-table tr:hover {
+  box-shadow: var(--shadow-md);
+  transform: scale(1.002);
+}
+
+.custom-table th {
+  border: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+}
+
+.custom-table td {
+  border: none;
+  padding: 16px;
+  background-color: white;
+  vertical-align: middle;
+}
+
+.custom-table td:first-child,
+.custom-table th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.custom-table td:last-child,
+.custom-table th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Activity Badge / Dot */
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Responsive Hide/Show Sidebar */
+.sidebar-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: var(--color-light-blue);
+  color: var(--color-primary);
+}
+
+@media (max-width: 991.98px) {
+  .sidebar-toggle-btn {
+    display: flex;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+  }
+}
+
+/* Custom switch for status updates */
+.form-switch .form-check-input {
+  width: 2.5em;
+  height: 1.25em;
+}
+
+.form-switch .form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
