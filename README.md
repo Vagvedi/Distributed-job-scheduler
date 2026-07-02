@@ -1,9 +1,16 @@
-# 🖥️ Distributed Job Scheduler
+<h1 align="center">🖥️ Distributed Job Scheduler</h1>
 
-> A scalable, database-backed task coordinator with automatic retry policies, dead-letter queue routing, worker cluster heartbeat checks, and real-time dashboard telemetrics.
+<p align="center">
+  <strong>A scalable, database-backed task coordinator with automatic retry policies, dead-letter queue routing, worker cluster heartbeat checks, and real-time dashboard telemetrics.</strong>
+</p>
 
----
-![Python](https://img.shields.io/badge/Python-3.11-blue)  ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)  ![React](https://img.shields.io/badge/React-Frontend-blue)  ![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey)  ![License](https://img.shields.io/badge/License-MIT-yellow)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-Backend-green" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/React-Frontend-blue" alt="React" />
+  <img src="https://img.shields.io/badge/Database-SQLite-lightgrey" alt="SQLite" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License" />
+</p>
 
 
 ## 📖 Project Overview
@@ -263,19 +270,19 @@ The system implements the following schemas in `scheduler.db` with relational co
 ## 📸 Screenshots
 
 ### Dashboard
-*(Add screenshots here)*
+![Dashboard](screenshots/dashboard.png)
 
 ### Login & Registration
-*(Add screenshots here)*
+![Login & Registration](screenshots/login.png)
 
 ### Job Management
-*(Add screenshots here)*
+![Job Management](screenshots/jobs.png)
 
 ### Worker Clusters
-*(Add screenshots here)*
+![Worker Clusters](screenshots/workers.png)
 
 ### Dead Letter Queue
-*(Add screenshots here)*
+![Dead Letter Queue](screenshots/dead_letter_queue.png)
 
 ---
 
