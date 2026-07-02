@@ -4,6 +4,10 @@
   <strong>A scalable, database-backed task coordinator with automatic retry policies, dead-letter queue routing, worker cluster heartbeat checks, and real-time dashboard telemetrics.</strong>
 </p>
 
+<<<<<<< HEAD
+---
+![Python](https://img.shields.io/badge/Python-3.11-blue)  ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)  ![React](https://img.shields.io/badge/React-Frontend-blue)  ![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey)  ![License](https://img.shields.io/badge/License-MIT-yellow)
+=======
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-blue" alt="Python" />
   <img src="https://img.shields.io/badge/FastAPI-Backend-green" alt="FastAPI" />
@@ -11,6 +15,7 @@
   <img src="https://img.shields.io/badge/Database-SQLite-lightgrey" alt="SQLite" />
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License" />
 </p>
+>>>>>>> 1a201d8 (Final Commit)
 
 
 ## 📖 Project Overview
