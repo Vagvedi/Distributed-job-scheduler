@@ -70,10 +70,10 @@ const Projects = () => {
     setSubmitting(true);
 
     try {
-      await createProject(name, parseInt(selectedOrgId, 10));
+      const newProj = await createProject(name, parseInt(selectedOrgId, 10));
       setName('');
       setShowModal(false);
-      setMessage('Project created successfully!');
+      if (window.showToast) window.showToast(`Project "${newProj.name || name}" created successfully!`, 'success');
       
       // Refresh list
       const data = await getProjects(selectedOrgId);
@@ -81,6 +81,7 @@ const Projects = () => {
     } catch (err) {
       console.error(err);
       setError('Failed to create project. Please verify backend state.');
+      if (window.showToast) window.showToast('Failed to create project', 'error');
     } finally {
       setSubmitting(false);
     }

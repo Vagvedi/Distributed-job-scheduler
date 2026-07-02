@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { FiGrid, FiUsers, FiFolder, FiList, FiPlayCircle, FiCpu, FiLogOut, FiMenu, FiX, FiAlertOctagon } from 'react-icons/fi';
 import { logoutUser, getLoggedInUserEmail } from '../api/api';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [toasts, setToasts] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    window.showToast = (message, type = 'success') => {
+      const id = Date.now();
+      setToasts((prev) => [...prev, { id, message, type }]);
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, 4000);
+    };
+    return () => {
+      window.showToast = undefined;
+    };
+  }, []);
 
   const handleLogout = () => {
     logoutUser();
@@ -96,6 +110,36 @@ const Layout = ({ children }) => {
         <main className="content-body">
           {children}
         </main>
+      </div>
+
+      {/* Global Toast Container */}
+      <div className="toast-container position-fixed bottom-0 end-0 p-3" style={{ zIndex: 9999 }}>
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`toast show align-items-center text-white bg-${
+              toast.type === 'success'
+                ? 'success'
+                : toast.type === 'error'
+                ? 'danger'
+                : toast.type === 'warning'
+                ? 'warning'
+                : 'info'
+            } border-0 mb-2 shadow-lg`}
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="d-flex">
+              <div className="toast-body small fw-medium">{toast.message}</div>
+              <button
+                type="button"
+                className="btn-close btn-close-white me-2 m-auto"
+                onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))}
+              ></button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

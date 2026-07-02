@@ -16,12 +16,26 @@ from app.services.job_service import (
     update_job_status,
     retry_job,
     delete_job,
+    get_all_jobs,
 )
 
 router = APIRouter(
     prefix="/jobs",
     tags=["Jobs"]
 )
+
+
+@router.get("/", response_model=List[JobResponse])
+def get_all_jobs_endpoint(
+    db: Session = Depends(get_db)
+):
+    """Get all jobs"""
+    try:
+        return get_all_jobs(db)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/", response_model=JobResponse)

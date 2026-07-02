@@ -38,14 +38,15 @@ const Organizations = () => {
     setSubmitting(true);
 
     try {
-      await createOrganization(name);
+      const newOrg = await createOrganization(name);
       setName('');
       setShowModal(false);
-      setMessage('Organization created successfully!');
+      if (window.showToast) window.showToast(`Organization "${newOrg.name || name}" created successfully!`, 'success');
       fetchOrganizations();
     } catch (err) {
       console.error(err);
       setError('Failed to create organization. Please try again.');
+      if (window.showToast) window.showToast('Failed to create organization', 'error');
     } finally {
       setSubmitting(false);
     }

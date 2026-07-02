@@ -216,3 +216,7 @@ def delete_job(db: Session, job_id: int):
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(status_code=500, detail="Failed to delete job")
+
+
+def get_all_jobs(db: Session):
+    return db.query(Job).all()

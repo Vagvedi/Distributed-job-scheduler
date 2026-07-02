@@ -21,8 +21,10 @@ const Queues = () => {
   const [statusUpdatingId, setStatusUpdatingId] = useState(null);
 
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  // Status Filter State
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
   // Load organizations initially
   useEffect(() => {
@@ -104,11 +106,10 @@ const Queues = () => {
     if (!name.trim() || !selectedProjectId) return;
 
     setError('');
-    setMessage('');
     setSubmitting(true);
 
     try {
-      await createQueue(
+      const newQueue = await createQueue(
         parseInt(selectedProjectId, 10),
         name,
         parseInt(priority, 10),
@@ -118,13 +119,14 @@ const Queues = () => {
       setPriority(1);
       setStatus('active');
       setShowModal(false);
-      setMessage('Queue created successfully!');
+      if (window.showToast) window.showToast(`Queue "${newQueue.name}" created successfully!`, 'success');
       
       // Refresh queues list
       fetchQueuesList();
     } catch (err) {
       console.error(err);
       setError('Failed to create queue. Please verify priority and queue parameters.');
+      if (window.showToast) window.showToast('Failed to create queue', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -133,17 +135,17 @@ const Queues = () => {
   const handleToggleStatus = async (queueId, currentStatus) => {
     const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';
     setError('');
-    setMessage('');
     setStatusUpdatingId(queueId);
 
     try {
       await updateQueueStatus(queueId, nextStatus);
-      setMessage(`Queue status updated to ${nextStatus}!`);
+      if (window.showToast) window.showToast(`Queue is now ${nextStatus}!`, 'success');
       // Update in local state to avoid full reload flickers
       setQueues(queues.map(q => q.id === queueId ? { ...q, status: nextStatus } : q));
     } catch (err) {
       console.error(err);
       setError('Failed to update queue status.');
+      if (window.showToast) window.showToast('Failed to update status', 'error');
     } finally {
       setStatusUpdatingId(null);
     }
@@ -159,12 +161,20 @@ const Queues = () => {
     return proj ? proj.name : '';
   };
 
+  // Perform client-side status filtering
+  const filteredQueues = queues.filter(q => {
+    if (statusFilter !== 'ALL') {
+      return q.status.toLowerCase() === statusFilter.toLowerCase();
+    }
+    return true;
+  });
+
   return (
     <div>
       <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
         <div>
           <h2 className="fw-bold mb-1 text-dark">Queues</h2>
-          <p className="text-muted mb-0">Monitor queue priorities and toggle activity status.</p>
+          <p className="text-muted mb-0">Monitor queue priorities, configure statuses, and toggle activity states.</p>
         </div>
         <div className="d-flex flex-wrap align-items-center gap-3">
           {/* Org Selector */}
@@ -232,29 +242,42 @@ const Queues = () => {
         </div>
       )}
 
-      {message && (
-        <div className="alert alert-success rounded-3 py-2 px-3 small border-0 mb-4 d-flex align-items-center" role="alert">
-          <FiCheckCircle className="me-2" />
-          {message}
-        </div>
-      )}
-
       {/* Queues Display */}
       <div className="card border-0 rounded-4 glass-panel p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-bold mb-0 text-dark">
             Queues in: <span className="text-primary">{getSelectedProjectName() || 'No Project Selected'}</span>
           </h5>
-          {selectedProjectId && (
-            <button 
-              onClick={fetchQueuesList}
-              className="btn btn-light btn-sm rounded-3 p-2 text-secondary d-flex align-items-center"
-              title="Refresh queues"
-              disabled={loadingQueues}
-            >
-              <FiRefreshCw className={loadingQueues ? 'spinner-border spinner-border-sm border-0' : ''} />
-            </button>
-          )}
+          
+          <div className="d-flex align-items-center gap-2">
+            {/* Status Filter */}
+            {selectedProjectId && (
+              <div className="d-flex align-items-center bg-white rounded-3 px-2 py-1 border shadow-sm" style={{ minWidth: '130px', fontSize: '0.8rem' }}>
+                <FiList className="text-warning me-2" size={14} />
+                <select
+                  className="form-select border-0 p-0 shadow-none fw-medium text-dark bg-transparent small"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  style={{ cursor: 'pointer', fontSize: '0.8rem' }}
+                >
+                  <option value="ALL">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            )}
+            
+            {selectedProjectId && (
+              <button 
+                onClick={fetchQueuesList}
+                className="btn btn-light btn-sm rounded-3 p-2 text-secondary d-flex align-items-center"
+                title="Refresh queues"
+                disabled={loadingQueues}
+              >
+                <FiRefreshCw className={loadingQueues ? 'spinner-border spinner-border-sm border-0' : ''} />
+              </button>
+            )}
+          </div>
         </div>
 
         {loadingQueues ? (
@@ -270,17 +293,11 @@ const Queues = () => {
             <h5 className="fw-semibold text-dark">No Project Selected</h5>
             <p className="text-muted small">Please choose or configure an active project context to list scheduler queues.</p>
           </div>
-        ) : queues.length === 0 ? (
+        ) : filteredQueues.length === 0 ? (
           <div className="text-center py-5">
             <FiList size={48} className="text-muted mb-3" />
             <h5 className="fw-semibold text-dark">No Queues Found</h5>
-            <p className="text-muted small mb-4">Create a new queue pipeline within project "{getSelectedProjectName()}".</p>
-            <button
-              onClick={() => setShowModal(true)}
-              className="btn btn-primary-custom btn-sm py-2 px-3"
-            >
-              Create Queue
-            </button>
+            <p className="text-muted small">No queue pipelines match the selected filters for project "{getSelectedProjectName()}".</p>
           </div>
         ) : (
           <div className="table-responsive">
@@ -295,7 +312,7 @@ const Queues = () => {
                 </tr>
               </thead>
               <tbody>
-                {queues.map((q) => (
+                {filteredQueues.map((q) => (
                   <tr key={q.id}>
                     <td>
                       <span className="badge bg-light text-dark px-2 py-1 font-monospace">#{q.id}</span>
@@ -393,6 +410,7 @@ const Queues = () => {
                         className="form-select rounded-3 py-2"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
+                        style={{ cursor: 'pointer' }}
                       >
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>

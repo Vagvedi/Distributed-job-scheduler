@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FiRefreshCw, FiTrash2, FiAlertOctagon } from 'react-icons/fi';
+import { FiRefreshCw, FiTrash2, FiAlertOctagon, FiDownload } from 'react-icons/fi';
 import { getDeadLetterEntries, deleteDeadLetterEntry } from '../api/api';
 
 const DeadLetterQueue = () => {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
   const [deletingId, setDeletingId] = useState(null);
 
   const fetchEntries = async () => {
@@ -32,19 +31,51 @@ const DeadLetterQueue = () => {
       return;
     }
     setError('');
-    setMessage('');
     setDeletingId(id);
 
     try {
       await deleteDeadLetterEntry(id);
-      setMessage('Dead letter entry deleted successfully!');
+      if (window.showToast) window.showToast('Dead letter entry deleted successfully!', 'success');
       setEntries(entries.filter((entry) => entry.id !== id));
     } catch (err) {
       console.error(err);
       setError('Failed to delete dead letter entry.');
+      if (window.showToast) window.showToast('Failed to delete entry', 'error');
     } finally {
       setDeletingId(null);
     }
+  };
+
+  // Client-side CSV export
+  const handleExportCSV = () => {
+    if (entries.length === 0) return;
+
+    const headers = ['ID', 'Job ID', 'Queue Name', 'Failure Reason', 'Retry Count', 'Failed At', 'Worker Name'];
+    const csvRows = [headers.join(',')];
+
+    entries.forEach(entry => {
+      const row = [
+        entry.id,
+        entry.job_id,
+        entry.queue_name || `Queue #${entry.queue_id}`,
+        `"${(entry.failure_reason || 'N/A').replace(/"/g, '""')}"`,
+        entry.retry_count,
+        entry.failed_at || '-',
+        entry.worker_name || (entry.worker_id ? `Worker #${entry.worker_id}` : '-')
+      ];
+      csvRows.push(row.join(','));
+    });
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `dead_letter_export_${Date.now()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    if (window.showToast) window.showToast('Dead Letter Queue exported successfully!', 'success');
   };
 
   const formatDate = (dateString) => {
@@ -55,12 +86,20 @@ const DeadLetterQueue = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
           <h2 className="fw-bold mb-1 text-dark">Dead Letter Queue</h2>
           <p className="text-muted mb-0">Monitor and manage jobs that have exceeded their maximum retry limits.</p>
         </div>
-        <div>
+        <div className="d-flex gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="btn btn-outline-secondary btn-sm rounded-3 py-2 px-3 fw-semibold d-flex align-items-center"
+            disabled={entries.length === 0}
+          >
+            <FiDownload className="me-2" />
+            <span>Export CSV</span>
+          </button>
           <button
             onClick={fetchEntries}
             className="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 d-flex align-items-center"
@@ -75,12 +114,6 @@ const DeadLetterQueue = () => {
       {error && (
         <div className="alert alert-danger rounded-3 py-2 px-3 small border-0 mb-4" role="alert">
           {error}
-        </div>
-      )}
-
-      {message && (
-        <div className="alert alert-success rounded-3 py-2 px-3 small border-0 mb-4" role="alert">
-          {message}
         </div>
       )}
 
