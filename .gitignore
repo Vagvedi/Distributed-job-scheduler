@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+backend/venv/
+venv/
+
+# Environment Variables
+.env
+backend/.env
+
+# Database
+*.db
+
+# VS Code
+.vscode/
+
+# Python Cache
+.pytest_cache/
+.mypy_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Build
+dist/
+build/
