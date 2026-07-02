@@ -72,6 +72,11 @@ export const createProject = async (name, orgId) => {
 };
 
 // Queues endpoints
+export const getAllQueues = async () => {
+  const response = await api.get('/queues/');
+  return response.data;
+};
+
 export const getQueues = async (projectId) => {
   const response = await api.get(`/queues/${projectId}`);
   return response.data;
@@ -84,6 +89,68 @@ export const createQueue = async (projectId, name, priority = 1, status = 'activ
 
 export const updateQueueStatus = async (queueId, status) => {
   const response = await api.patch(`/queues/${queueId}/status`, { status });
+  return response.data;
+};
+
+// Jobs endpoints
+export const createJob = async (queueId, payload, priority = 1, maxRetries = 3) => {
+  const response = await api.post('/jobs/', { queue_id: queueId, payload, priority, max_retries: maxRetries });
+  return response.data;
+};
+
+export const getJobs = async () => {
+  const response = await api.get('/jobs/');
+  return response.data;
+};
+
+export const getJob = async (jobId) => {
+  const response = await api.get(`/jobs/${jobId}`);
+  return response.data;
+};
+
+export const getJobsByQueue = async (queueId) => {
+  const response = await api.get(`/jobs/queue/${queueId}`);
+  return response.data;
+};
+
+export const updateJobStatus = async (jobId, status) => {
+  const response = await api.patch(`/jobs/${jobId}/status`, { status });
+  return response.data;
+};
+
+export const deleteJob = async (jobId) => {
+  const response = await api.delete(`/jobs/${jobId}`);
+  return response.data;
+};
+
+// Workers endpoints
+export const createWorker = async (name) => {
+  const response = await api.post('/workers/', { name });
+  return response.data;
+};
+
+export const getWorkers = async () => {
+  const response = await api.get('/workers/');
+  return response.data;
+};
+
+export const getWorker = async (workerId) => {
+  const response = await api.get(`/workers/${workerId}`);
+  return response.data;
+};
+
+export const updateWorkerStatus = async (workerId, status) => {
+  const response = await api.patch(`/workers/${workerId}/status`, { status });
+  return response.data;
+};
+
+export const workerHeartbeat = async (workerId, statusMessage) => {
+  const response = await api.post(`/workers/${workerId}/heartbeat`, { status_message: statusMessage });
+  return response.data;
+};
+
+export const assignJobToWorker = async (workerId, jobId) => {
+  const response = await api.patch(`/workers/${workerId}/assign-job`, { job_id: jobId });
   return response.data;
 };
 

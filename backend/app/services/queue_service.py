@@ -30,6 +30,10 @@ def create_queue(db: Session, project_id: int, queue_data: QueueCreate):
         raise HTTPException(status_code=500, detail="Failed to create queue")
 
 
+def get_all_queues(db: Session):
+    return db.query(Queue).all()
+
+
 def get_queues_by_project(db: Session, project_id: int):
     # Verify project exists
     project = db.query(Project).filter(Project.id == project_id).first()

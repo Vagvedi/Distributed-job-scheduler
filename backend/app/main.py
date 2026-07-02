@@ -22,6 +22,8 @@ from app.routers.organizations import router as org_router
 from app.routers.projects import router as project_router
 from app.routers.queues import router as queue_router
 from app.routers.auth import router as auth_router
+from app.routers.jobs import router as jobs_router
+from app.routers.workers import router as workers_router
 
 # Create all tables after importing model modules
 Base.metadata.create_all(bind=engine)
@@ -45,6 +47,8 @@ app.include_router(auth_router)
 app.include_router(org_router)
 app.include_router(project_router)
 app.include_router(queue_router)
+app.include_router(jobs_router)
+app.include_router(workers_router)
 
 @app.get("/")
 def root():

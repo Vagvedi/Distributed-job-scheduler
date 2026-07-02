@@ -11,6 +11,7 @@ from app.schemas.queue import (
 )
 from app.services.queue_service import (
     create_queue,
+    get_all_queues,
     get_queues_by_project,
     get_queue,
     update_queue_status,
@@ -20,6 +21,19 @@ router = APIRouter(
     prefix="/queues",
     tags=["Queues"]
 )
+
+
+@router.get("/", response_model=List[QueueResponse])
+def list_all_queues(
+    db: Session = Depends(get_db)
+):
+    """Get all queues"""
+    try:
+        return get_all_queues(db)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/", response_model=QueueResponse)
